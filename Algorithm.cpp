@@ -16,10 +16,11 @@
  * _minX - lower border.
  * _maxX - upper border.
  */
-Algorithm::Algorithm(double _minX, double _maxX, double (Functions::*_f)(double x1, double x2)) {
+Algorithm::Algorithm(double _minX, double _maxX, int _pcount, double (Functions::*_f)(std::vector<double> x)) {
     maxX = _maxX;
     minX = _minX;
     f = _f;
+    pcount = _pcount;
 }
 
 Algorithm::Algorithm(const Algorithm& orig) {
@@ -30,17 +31,19 @@ Algorithm::~Algorithm() {
 
 void Algorithm::init() {
     double maxRandom = maxX + abs(minX);
+    std::vector<double> parameters;
     for(int i = 0; i < this->POPULATION_SIZE; i++) {
-        ga_struct ga = {.x1 = maxRandom * (rand()/(RAND_MAX + 1.0)) - abs(minX), 
-                        .x2 = maxRandom * (rand()/(RAND_MAX + 1.0)) - abs(minX),
-                        .fitness = 0};
+        for(int j = 0; j < pcount; j++)
+            parameters.push_back(maxRandom * (rand()/(RAND_MAX + 1.0)) - abs(minX));
+        ga_struct ga = {.x = parameters, .fitness = 0};
         this->population.push_back(ga);
+        parameters.clear();
     }
 }
 
 void Algorithm::print_population() {
     for(int i = 0; i < 10; i++) {
-        std::cout << population[i].x1 << ", " << population[i].x2 << ", " << population[i].fitness << "\n";
+        std::cout << population[i].x[0] << ", " << population[i].x[1] << ", " << population[i].fitness << "\n";
     }
 }
 
@@ -55,7 +58,7 @@ void Algorithm::calc_fitness() {
     
     for(int i = 0; i < population.size(); i++) {
         //this->set_fitness(i, &Functions::myfunc);
-        population[i].fitness = (func.*f)(population[i].x1, population[i].x2);
+        population[i].fitness = (func.*f)(population[i].x);
     }
 }
 
@@ -152,34 +155,35 @@ Algorithm::ga_struct Algorithm::getMin() {
 
 void Algorithm::newGenerationForm(std::vector<Algorithm::ga_struct> parents) {
     unsigned int dad, mom;
+    ga_struct temp;
     for(int i = 0; i < POPULATION_SIZE; i++) {
         dad = (int)(POPULATION_SIZE * (rand()/(RAND_MAX + 1.0))); //random index from parents 
         mom = (int)(POPULATION_SIZE * (rand()/(RAND_MAX + 1.0))); //random index from parents
         
-        population[i] = crossover(parents[dad], parents[mom]);
+        temp = population[i];
+        population[i] = crossover(temp, parents[dad], parents[mom]);
     }
 }
 
-Algorithm::ga_struct Algorithm::crossover(ga_struct dad, ga_struct mom) {
+Algorithm::ga_struct Algorithm::crossover(ga_struct origin, ga_struct dad, ga_struct mom) { //NOT OKAY!
     int t1 = 0; //point 1 for dad
     int t2 = -1; //point 2 for mom
+    std::vector<double> parameters;
     ga_struct son;
     
     while(t1 >= t2) { //point1 should be less than point2
-        t1 = (int)(2 * (rand()/(RAND_MAX + 1.0)) - 1);  //point 1 can get value 0 or 1.
-        t2 = (int)(3 * (rand()/(RAND_MAX + 1.0)) - 1);  //point 1 can get value 1 or 2.
+        t1 = (int)(pcount * (rand()/(RAND_MAX + 1.0)));  
+        t2 = (int)(pcount * (rand()/(RAND_MAX + 1.0)));  
     }
     //std::cout << "points: " << t1 << ", " << t2 << std::endl;
-    switch(t1) {
-        case 0: 
-           son.x1 = mom.x1;
-           son.x2 = mom.x2;
-           break;
-        case 1:   
-           son.x1 = dad.x1;
-           son.x2 = mom.x2;
-           break;
-    }
+    for(int i = 0; i <= t1; i++)
+        parameters.push_back(dad.x[i]);
+    for(int i = t1+1; i <= t2; i++)
+        parameters.push_back(mom.x[i]);
+    for(int i = t2+1; i < pcount; i++)
+        parameters.push_back(origin.x[i]);
+    
+    son.x = parameters;
     
     return son;
 }
@@ -226,20 +230,30 @@ void Algorithm::findMin() {
     
 }
 
+std::vector<double> Algorithm::roundResult(std::vector<double> input) {
+    std::vector<double> temp;
+    
+    for(int i = 0; i < input.size(); i++) {
+        temp.push_back(round(input[i]));
+    }
+    
+    return temp;
+}
+
 void Algorithm::printMax() {
     Functions func = Functions();
     ga_struct max = getMax();
     
-    std::cout << "X1: " << round(max.x1) << std::endl;
-    std::cout << "X2: " << round(max.x2) << std::endl;
-    std::cout << "Extremum: " << (func.*f)(round(max.x1), round(max.x2)) << std::endl;
+    std::cout << "X1: " << max.x[0] << std::endl;
+    std::cout << "X2: " << max.x[1] << std::endl;
+    std::cout << "Extremum: " << (func.*f)(roundResult(max.x)) << std::endl;
 }
 
 void Algorithm::printMin() {
     Functions func = Functions();
     ga_struct min = getMin();
     
-    std::cout << "X1: " << round(min.x1) << std::endl;
-    std::cout << "X2: " << round(min.x2) << std::endl;
-    std::cout << "Extremum: " << (func.*f)(round(min.x1), round(min.x2)) << std::endl;
+    std::cout << "X1: " << min.x[0] << std::endl;
+    std::cout << "X2: " << min.x[1] << std::endl;
+    std::cout << "Extremum: " << (func.*f)(roundResult(min.x)) << std::endl;
 }

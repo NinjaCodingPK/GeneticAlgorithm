@@ -14,6 +14,7 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 #include <math.h>
+#include <vector>
 
 class Functions {
 public:
@@ -21,9 +22,10 @@ public:
     Functions(const Functions& orig);
     virtual ~Functions();
     
-    double myfunc(double x1, double x2);
-    double deJong(double x1, double x2);
-    double martin_gaddy(double x1, double x2);
+    double myfunc(std::vector<double> x);
+    double deJong(std::vector<double> x);
+    double martin_gaddy(std::vector<double> x);
+    double hyper_sphere(std::vector<double> x);
 private:
 
 };

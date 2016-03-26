@@ -25,13 +25,18 @@ int main(int argc, char** argv) {
 //    alg1.resolve();
 //    alg1.print_max();
     
-//    Algorithm alg1 = Algorithm(-2.048, 2.048, &Functions::deJong);
+//    Algorithm alg1 = Algorithm(-2.048, 2.048, 2, &Functions::deJong);
 //    alg1.findMax();
 //    alg1.printMax();
     
-    Algorithm alg2 = Algorithm(0, 10, &Functions::martin_gaddy);
+//    Algorithm alg2 = Algorithm(0, 10, 2, &Functions::martin_gaddy);
+//    alg2.findMin();
+//    alg2.printMin();
+ 
+    Algorithm alg2 = Algorithm(-5.12, 5.12, 6, &Functions::hyper_sphere);
     alg2.findMin();
-    alg2.printMin();
+    alg2.printMin();    
+    
     return 0;
 }
 
