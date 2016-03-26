@@ -21,9 +21,17 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-    Algorithm al = Algorithm(-2, 2, &Functions::myfunc);
-    al.resolve();
-    al.print_max();
+//    Algorithm alg1 = Algorithm(-2, 2, &Functions::myfunc);
+//    alg1.resolve();
+//    alg1.print_max();
+    
+//    Algorithm alg1 = Algorithm(-2.048, 2.048, &Functions::deJong);
+//    alg1.findMax();
+//    alg1.printMax();
+    
+    Algorithm alg2 = Algorithm(0, 10, &Functions::martin_gaddy);
+    alg2.findMin();
+    alg2.printMin();
     return 0;
 }
 

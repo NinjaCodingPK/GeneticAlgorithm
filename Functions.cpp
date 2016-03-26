@@ -26,3 +26,10 @@ double Functions::myfunc(double x1, double x2) {
     return x1 + x2;
 }
 
+double Functions::deJong(double x1, double x2) {
+    return (3905.93) - 100*pow((x1*x1 - x2), 2) - pow((1 - x1), 2);
+}
+
+double Functions::martin_gaddy(double x1, double x2) {
+    return pow((x1 - x2), 2) + pow(((x1+x2-10)/3), 2);
+}

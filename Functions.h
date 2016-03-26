@@ -13,6 +13,7 @@
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
+#include <math.h>
 
 class Functions {
 public:
@@ -21,6 +22,8 @@ public:
     virtual ~Functions();
     
     double myfunc(double x1, double x2);
+    double deJong(double x1, double x2);
+    double martin_gaddy(double x1, double x2);
 private:
 
 };
