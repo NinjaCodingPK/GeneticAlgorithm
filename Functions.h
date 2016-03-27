@@ -26,6 +26,9 @@ public:
     double deJong(std::vector<double> x);
     double martin_gaddy(std::vector<double> x);
     double hyper_sphere(std::vector<double> x);
+    double rosenbrock1(std::vector<double> x);
+    double rosenbrock2(std::vector<double> x);
+    double griewangk(std::vector<double> x);
 private:
 
 };

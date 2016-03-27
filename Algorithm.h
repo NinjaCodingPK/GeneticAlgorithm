@@ -49,9 +49,9 @@ private:
     double (Functions::*f)(std::vector<double> x); // function 
     int pcount; // count of parameters in function
     static const int POPULATION_SIZE = 2048;
-    static const int MAX_ITERATIONS = 1000; // 16384;
+    static const int MAX_ITERATIONS = 2000; // 16384;
     static const double ELITE_RATE = 0.10f;
-    static const double MUTATION_RATE = 0.25f;		
+    static const double MUTATION_RATE = 0.1f;		
     const double MUTATION = RAND_MAX * MUTATION_RATE;
     static const int TOURNAMENT_SIZE = 100;
     double maxX, minX; // upper and lower borders
@@ -68,6 +68,7 @@ private:
     void newGenerationForm(std::vector<Algorithm::ga_struct>); // parents - winners of a tournament 
     void mutation(); // Random mutation
     
+    double getAverageFitness(); // find average fitness through the whole population
     std::vector<double> roundResult(std::vector<double>);
 };
 
