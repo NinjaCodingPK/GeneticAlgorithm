@@ -189,15 +189,30 @@ Algorithm::ga_struct Algorithm::crossover(ga_struct origin, ga_struct dad, ga_st
 }
 
 void Algorithm::findMax() {
+    double originFitness, newFitness;
+    int i = 0;
     init();
     calc_fitness();
-    std::cout << "pop 1 :" << std::endl;
-    print_population();
+    //std::cout << "pop 1 :" << std::endl;
+   // print_population();
     
-    for(int i = 0; i < MAX_ITERATIONS; i ++) {
+     do {
+        originFitness = getAverageFitness();
         newGenerationForm(tournamentMax());
+        mutation();
         calc_fitness();
-    }
+        newFitness = getAverageFitness();
+        
+        i++;
+        if(i >= POPULATION_SIZE)
+            break;
+    } while(newFitness > originFitness);
+    //std::cout << "Iterations : " << i << std::endl;
+//    for(int i = 0; i < MAX_ITERATIONS; i ++) {
+//        newGenerationForm(tournamentMax());
+//        //mutation();
+//        calc_fitness();
+//    }
     
     //std::cout << "pop last :" << std::endl;
     //print_population();
@@ -218,16 +233,50 @@ void Algorithm::findMax() {
 }
 
 void Algorithm::findMin() {
+    double originFitness, newFitness;
+    int i = 0;
     init();
     calc_fitness();
-    std::cout << "pop 1 :" << std::endl;
-    print_population();
+    //std::cout << "pop 1 :" << std::endl;
+    //print_population();
     
-    for(int i = 0; i < MAX_ITERATIONS; i ++) {
+    do {
+        originFitness = getAverageFitness();
         newGenerationForm(tournamentMin());
+        mutation();
         calc_fitness();
-    }
+        newFitness = getAverageFitness();
+        
+        i++;
+        if(i >= POPULATION_SIZE)
+            break;
+    } while(newFitness < originFitness);
+//    for(int i = 0; i < MAX_ITERATIONS; i ++) {
+//        newGenerationForm(tournamentMin());
+//        mutation();
+//        calc_fitness();
+//    }
     
+}
+
+void Algorithm::mutation() {
+    int randIndex;
+    for(int i = 0; i < POPULATION_SIZE; i++) {
+        if(random()/(RAND_MAX + 1.0) < MUTATION_RATE) {
+            randIndex = (int)(pcount * (rand()/(RAND_MAX + 1.0)));
+            population[i].x[randIndex] =  maxX + abs(minX) * (rand()/(RAND_MAX + 1.0)) - abs(minX);
+        }
+            
+    }
+}
+
+double Algorithm::getAverageFitness() {
+    double sum = 0;
+    
+    for(int i = 0; i < POPULATION_SIZE; i++)
+        sum += population[i].fitness;
+    
+    return sum/POPULATION_SIZE;
 }
 
 std::vector<double> Algorithm::roundResult(std::vector<double> input) {
@@ -244,8 +293,9 @@ void Algorithm::printMax() {
     Functions func = Functions();
     ga_struct max = getMax();
     
-    std::cout << "X1: " << max.x[0] << std::endl;
-    std::cout << "X2: " << max.x[1] << std::endl;
+    for(int i = 0; i < pcount; i++) {
+        std::cout << "X" << i << ": " << max.x[i] << std::endl;
+    }
     std::cout << "Extremum: " << (func.*f)(roundResult(max.x)) << std::endl;
 }
 
@@ -253,7 +303,8 @@ void Algorithm::printMin() {
     Functions func = Functions();
     ga_struct min = getMin();
     
-    std::cout << "X1: " << min.x[0] << std::endl;
-    std::cout << "X2: " << min.x[1] << std::endl;
+   for(int i = 0; i < pcount; i++) {
+        std::cout << "X" << i << ": " << min.x[i] << std::endl;
+    }
     std::cout << "Extremum: " << (func.*f)(roundResult(min.x)) << std::endl;
 }
