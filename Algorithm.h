@@ -64,9 +64,10 @@ private:
     ga_struct getMax(); // find max fitness through population (for max extremum)
     ga_struct getMin(); // find min fitness through population (for min extremum)
     
-    ga_struct crossover(ga_struct origin, ga_struct, ga_struct); // Two-point crossover.
+    ga_struct crossover(ga_struct origin, ga_struct, ga_struct); // Two-point crossover
     void newGenerationForm(std::vector<Algorithm::ga_struct>); // parents - winners of a tournament 
     void mutation(); // Random mutation
+    std::vector<ga_struct> elitism(); // Returns vector of elite individuals which will appear in next generation
     
     double getAverageFitness(); // find average fitness through the whole population
     std::vector<double> roundResult(std::vector<double>);

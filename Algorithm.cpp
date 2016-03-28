@@ -153,10 +153,32 @@ Algorithm::ga_struct Algorithm::getMin() {
     return min;
 }
 
+std::vector<Algorithm::ga_struct> Algorithm::elitism() {
+    int randIndex;
+    std::vector<Algorithm::ga_struct> buf;
+    
+    for(int i = 0; i < POPULATION_SIZE; i++) {
+        if(random()/(RAND_MAX + 1.0) < ELITE_RATE) {
+            randIndex = (int)(pcount * (rand()/(RAND_MAX + 1.0)));
+            buf.push_back(population[randIndex]);
+        }
+            
+    }
+    
+    return buf;
+}
+
 void Algorithm::newGenerationForm(std::vector<Algorithm::ga_struct> parents) {
     unsigned int dad, mom;
     ga_struct temp;
-    for(int i = 0; i < POPULATION_SIZE; i++) {
+    int i = 0;
+    
+    //select elite individuals
+//    std::vector<Algorithm::ga_struct> buf = elitism();
+//    for(i; i < buf.size(); i++)
+//        population[i] = buf[i];
+        
+    for(i; i < POPULATION_SIZE; i++) {
         dad = (int)(POPULATION_SIZE * (rand()/(RAND_MAX + 1.0))); //random index from parents 
         mom = (int)(POPULATION_SIZE * (rand()/(RAND_MAX + 1.0))); //random index from parents
         
